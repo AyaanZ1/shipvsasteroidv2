@@ -26,24 +26,25 @@ class Ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 254
         self.rect.y = 286
-        self.speed = 3
+        self.speed = 1
+        self.height = self.rect.height
+        self.width = self.rect.width
 
 
-    def update(self,enemy):
+    def update(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            self.rect.y -= self.speed
+            self.rect.centery -= self.speed
         if keys[pygame.K_DOWN]:
-            self.rect.y += self.speed
+            self.rect.centery += self.speed
 
 
         #boundaries
-        if self.rect.y < 0:
-            self.rect.y = 0
-        if self.rect.y > 536:
-            self.rect.y = 536
-        if pygame.sprite.collide_mask(self,enemy):
-            quit()
+        if self.rect.centery < 0:
+            self.rect.centery = 0
+        if self.rect.centery > 536:
+            self.rect.centery = 536
+
     def draw(self,screen):
         screen.blit(self.image,self.rect)
 
@@ -56,7 +57,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.x = 1018
         self.rect.y = random.randint(0,586)
         self.image = pygame.transform.scale(self.image,(125,98))
-        self.speed = 3
+        self.speed = 1
 
 
     def update(self):
@@ -67,8 +68,9 @@ class Asteroid(pygame.sprite.Sprite):
         if self.rect.x >= 1018:
             self.rect.x = 1018
             self.rect.y = random.randint(0,586)
+
     def draw(self,screen):
-        screen.blit(self.image,(self.rect.x,self.rect.y))
+        screen.blit(self.image,(self.rect.centerx,self.rect.centery))
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self,image,x,y):
@@ -77,15 +79,20 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 10
+        self.speed = 1
+        self.image = pygame.transform.scale(self.image,(25,25))
 
-    def update(self):
+
+    def update(self,enemy):
         self.rect.x += self.speed
-        if self.rect.x > 1018:
+        if self.rect.x > 1018 or pygame.sprite.collide_mask(self,enemy):
             self.kill()
 
     def draw(self,screen):
-        screen.blit(self.image,(self.rect.x,self.rect.y))
+        screen.blit(self.image,self.rect)
+        print(self.rect.x,self.rect.y)
+
+
 
 
 
